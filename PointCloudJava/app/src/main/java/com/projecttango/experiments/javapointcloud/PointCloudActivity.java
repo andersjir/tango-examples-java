@@ -94,6 +94,12 @@ public class PointCloudActivity extends Activity implements OnClickListener {
     private PointCloudManager mPointCloudManager;
     private TangoUx mTangoUx;
 
+    private ArrayList<float[]> mPosePositionBuffer;
+    private ArrayList<float[]> mPoseOrientationBuffer;
+    private ArrayList<Float> mPoseTimestampBuffer;
+    private int mNumPoseInSequence;
+    boolean mIsRecording;
+
     private static final DecimalFormat FORMAT_THREE_DECIMAL = new DecimalFormat("0.000");
     private static final double UPDATE_INTERVAL_MS = 100.0;
 
@@ -115,6 +121,10 @@ public class PointCloudActivity extends Activity implements OnClickListener {
         mRenderer = setupGLViewAndRenderer(mPointCloudManager);
         mTangoUx = setupTangoUxAndLayout();
         mIsTangoServiceConnected = false;
+
+        mPosePositionBuffer = new ArrayList<float[]>();
+        mPoseOrientationBuffer = new ArrayList<float[]>();
+        mPoseTimestampBuffer = new ArrayList<Float>();
     }
 
     @Override
@@ -174,6 +184,12 @@ public class PointCloudActivity extends Activity implements OnClickListener {
         case R.id.top_down_button:
             mRenderer.setTopDownView();
             break;
+        case R.id.save_button:
+            savePointCloud();
+            break;
+        case R.id.record_button:
+            startRecord();
+            break;
         default:
             Log.w(TAG, "Unrecognized button click.");
         }
@@ -183,6 +199,14 @@ public class PointCloudActivity extends Activity implements OnClickListener {
     public boolean onTouchEvent(MotionEvent event) {
         mRenderer.onTouchEvent(event);
         return true;
+    }
+
+    private void startRecord() {
+
+    }
+
+    private void savePointCloud() {
+
     }
 
     private void setTangoListeners() {
@@ -202,6 +226,14 @@ public class PointCloudActivity extends Activity implements OnClickListener {
                 }
 
                 mPose = pose;
+
+                if (mIsRecording && pose.statusCode == TangoPoseData.POSE_VALID) {
+                    mPosePositionBuffer.add(mNumPoseInSequence, pose.getTranslationAsFloats());
+                    mPoseOrientationBuffer.add(mNumPoseInSequence, pose.getRotationAsFloats());
+                    mPoseTimestampBuffer.add((float)pose.timestamp);
+                    mNumPoseInSequence++;
+                }
+
                 // Calculate the delta time from previous pose.
                 final double deltaTime = (pose.timestamp - mPosePreviousTimeStamp)
                         * SECS_TO_MILLISECS;
@@ -384,6 +416,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
         mTopDownButton = (Button) findViewById(R.id.top_down_button);
         mTopDownButton.setOnClickListener(this);
         mSaveButton = (Button) findViewById((R.id.save_button));
+        mSaveButton.setOnClickListener(this);
 
         PackageInfo packageInfo;
         try {

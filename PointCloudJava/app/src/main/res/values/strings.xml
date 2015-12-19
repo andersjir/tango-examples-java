@@ -31,7 +31,9 @@
     <string name="first_person">First</string>
     <string name="third_person">Third</string>
     <string name="top_down">Top</string>
+    <string name="save">Save</string>
     <string name="start">Start</string>
+    <string name="Record">Record</string>
     <string name="autoreseton">Auto Reset On</string>
     <string name="autoresetoff">Auto Reset Off</string>
     <string name="averageZ">"Average depth (m): "</string>
