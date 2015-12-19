@@ -83,6 +83,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
     private Button mFirstPersonButton;
     private Button mThirdPersonButton;
     private Button mTopDownButton;
+    private Button mSaveButton;
 
     private int mCount;
     private int mPreviousPoseStatus = TangoPoseData.POSE_INVALID;
@@ -382,6 +383,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
         mThirdPersonButton.setOnClickListener(this);
         mTopDownButton = (Button) findViewById(R.id.top_down_button);
         mTopDownButton.setOnClickListener(this);
+        mSaveButton = (Button) findViewById((R.id.save_button));
 
         PackageInfo packageInfo;
         try {
